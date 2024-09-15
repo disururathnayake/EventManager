@@ -25,6 +25,8 @@ const signInUser = (req, res) => {
         } else {
             // Simple password comparison
             if (user.password === password) {
+                req.session.userId = user.userId;
+                console.log('Session userId set:', req.session.userId);
                 res.status(200).json({message: 'User authenticated successfully'});
             } else {
                 res.status(401).json({message: 'Invalid credentials'});

@@ -3,11 +3,20 @@ let app = express();
 let port = process.env.port || 3000;
 require('./dbConnection');
 
+const session = require('express-session');
+
 const { Socket } = require('socket.io');
 let http = require('http').createServer(app);
 let io = require('socket.io')(http);
 
 let userIdCounter = 1;
+
+app.use(session({
+    secret: 'eventmanager', 
+    resave: false,              
+    saveUninitialized: false,   
+    cookie: { secure: 'auto', httpOnly: true }  
+}));
 
 app.use(express.static(__dirname + '/'));
 app.use(express.json());
