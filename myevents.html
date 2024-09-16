@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Add Events</title>
+    <title>Manage My Events - Event Manager</title>
     <link
       href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
       rel="stylesheet"
@@ -20,8 +20,16 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+      <a class="navbar-brand ps-3" href="dashboard.html">Event Manager</a>
+      <button
+        class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
+        id="sidebarToggle"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+
       <!-- Navbar Brand-->
       <a class="navbar-brand ps-3" href="dashboard.html">Event Manager</a>
       <!-- Sidebar Toggle-->
@@ -68,7 +76,7 @@
             <li><a class="dropdown-item" href="#!">Settings</a></li>
             <li><a class="dropdown-item" href="#!">Activity Log</a></li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="#!">Logout</a></li>
+            <li><a class="dropdown-item" href="index.html">Logout</a></li>
           </ul>
         </li>
       </ul>
@@ -106,80 +114,47 @@
           </div>
         </nav>
       </div>
-
-      <div class="container mt-5">
-        <h2>Add Event</h2>
-        <form id="addEventForm">
-          <div class="mb-3">
-            <label for="eventName" class="form-label">Event Name</label>
-            <input type="text" class="form-control" id="eventName" required />
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="mt-4">Manage My Events</h1>
+            <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item active">
+                View, Edit, or Delete Events
+              </li>
+            </ol>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Event Name</th>
+                  <th>Event Date</th>
+                  <th>Event Time</th>
+                  <th>Venue</th>
+                  <th>About the Event</th>
+                  <th>Special Notes</th>
+                  <th>Type</th>
+                  <th>Event Photo</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="eventsTableBody">
+                <!-- Events will be dynamically inserted here using JavaScript -->
+              </tbody>
+            </table>
           </div>
-          <div class="mb-3">
-            <label for="eventDate" class="form-label">Event Date</label>
-            <input type="date" class="form-control" id="eventDate" required />
-          </div>
-          <div class="mb-3">
-            <label for="eventTime" class="form-label">Event Time</label>
-            <input type="time" class="form-control" id="eventTime" required />
-          </div>
-          <div class="mb-3">
-            <label for="venue" class="form-label">Venue</label>
-            <input type="text" class="form-control" id="venue" required />
-          </div>
-          <div class="mb-3">
-            <label for="aboutEvent" class="form-label">About the Event</label>
-            <textarea
-              class="form-control"
-              id="aboutEvent"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="specialNotes" class="form-label">Special Notes</label>
-            <textarea
-              class="form-control"
-              id="specialNotes"
-              rows="2"
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Type</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="freeForAll"
-              value="Free for All"
-              checked
-            />
-            <label for="freeForAll">Free for All</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="paidTickets"
-              value="Paid - Tickets"
-            />
-            <label for="paidTickets">Paid - Tickets</label>
-          </div>
-
-          <div class="mb-3">
-            <label for="eventPhoto" class="form-label"
-              >Event Notice Photo (optional)</label
-            >
-            <input type="file" class="form-control" id="eventPhoto" />
-          </div>
-
-          <button type="submit" class="btn btn-primary" id="addEventButton">
-            Add Event
-          </button>
-        </form>
+        </main>
       </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="scripts.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
