@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Forum</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Include Socket.IO client library -->
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <!-- Dashboard Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand ps-3" href="dashboard.html">Event Manager</a>
+        <button class="btn btn-link btn-sm" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <form class="d-inline-block form-inline ms-auto">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search">
+                <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#!">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#!">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <a class="nav-link" href="dashboard.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="myevents.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-list-ul"></i></div>
+                            Manage My Events
+                        </a>
+                        <a class="nav-link" href="addEvent.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-plus-circle"></i></div>
+                            Add Events
+                        </a>
+                        <a class="nav-link" href="calendar.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calendar-alt"></i></div>
+                            Event Calendar
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Content Section -->
+        <div id="layoutSidenav_content">
+            <main>
+                <!-- Contact Information and Map Section -->
+                <section id="contact-section" class="py-5">
+                    <div class="container">
+                        <!-- Heading Section -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="p-3 mb-4 bg-danger text-dark bg-opacity-50 d-flex flex-column align-items-center">
+                                    <h1 class="text-center">Feedback Forum</h1>
+                                    <p class="lead text-center">Get in touch with us for any queries or feedback.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Contact Information and Map Section -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>Contact Information</h3><br>
+                                <p><strong>Address:</strong> 2 Haversham Ave, Wheelers Hill VIC 3150</p>
+                                <p><strong>Phone:</strong> +61 452 665 435</p>
+                                <p><strong>Email:</strong> info@events.com</p>
+                                <p><strong>Working Hours:</strong> Mon-Fri, 9:00 AM - 5:00 PM</p><br>
+                                <h3>Map</h3><br>
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3147.889717888883!2d145.19527047555664!3d-37.909640339523136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad63e274998c3a1%3A0x113836c243c811af!2s2%20Haversham%20Ave%2C%20Wheelers%20Hill%20VIC%203150!5e0!3m2!1sen!2sau!4v1714616585143!5m2!1sen!2sau"
+                                    width="80%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                                    title="Location on map" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>Query/Feedback Form</h3><br>
+                                <form id="queryForm" novalidate onsubmit="return validateForm()">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required
+                                            oninput="validateInput('name', 'nameMsg', /^[a-zA-Z\s]+$/, 'Please enter a valid full name')">
+                                        <span id="nameMsg" class="error"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email address</label>
+                                        <input type="email" class="form-control" id="email" name="email" required
+                                            oninput="validateInput('email', 'emailMsg', /^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address')">
+                                        <span id="emailMsg" class="error"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" required
+                                            oninput="validateInput('phone', 'phoneMsg', /^\d{10}$/, 'Phone number must be exactly 10 digits')">
+                                        <span id="phoneMsg" class="error"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="query" class="form-label">Query/Feedback</label>
+                                        <textarea class="form-control" id="query" rows="3" required
+                                            oninput="validateInput('query', 'queryMsg', /^(?!\s*$).+/, 'Please enter your query/feedback')"></textarea>
+                                        <span id="queryMsg" class="error"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                                <div id="errorMessage" class="text-danger mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <!-- Custom JS -->
+    <script src="scripts.js"></script>
+</body>
+
+</html>
