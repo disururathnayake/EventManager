@@ -146,6 +146,7 @@ $(document).ready(function () {
 
 //Manage events
 document.addEventListener("DOMContentLoaded", function () {
+  // Fetch and display events
   fetch("/events", {
     method: "GET",
     headers: {
@@ -154,38 +155,122 @@ document.addEventListener("DOMContentLoaded", function () {
   })
     .then((response) => response.json())
     .then((data) => {
-      //console.log(data);
       const tableBody = document.getElementById("eventsTableBody");
-      tableBody.innerHTML = ""; // Clear existing rows
+      tableBody.innerHTML = "";
 
       if (data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="4">No events found.</td></tr>';
       } else {
         data.forEach((event) => {
-          let formattedDate = "N/A"; // Default if date is not valid
-          if (event.eventDate) {
-            const date = new Date(event.eventDate);
-            if (!isNaN(date)) {
-              // Check if the date is valid
-              formattedDate = date.toLocaleDateString(); // Format the date
-            }
-          }
-          const row = `<tr>
-                            <td>${event.eventName}</td>
-                            <td>${formattedDate}</td>
-                            <td>${event.eventTime}</td>
-                            <td>${event.venue}</td>
-                            <td>${event.aboutEvent}</td>
-                            <td>${event.specialNotes}</td>
-                            <td>${event.type}</td>
-                            <td><img src="${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
+          const row = document.createElement("tr");
 
-                            <td>
-                                <button class="btn btn-primary btn-sm">Edit</button>
-                                <button class="btn btn-danger btn-sm">Delete</button>
-                            </td>
-                         </tr>`;
-          tableBody.innerHTML += row; // Append new row for each event
+          // Create a dropdown for event types
+          const typeDropdown = `
+            <select class="eventTypeDropdown" disabled>
+              <option value="Free for All" ${event.type === "Free for All" ? "selected" : ""}>Free for All</option>
+              <option value="Paid - Tickets" ${event.type === "Paid - Tickets" ? "selected" : ""}>Paid - Tickets</option>
+            </select>
+          `;
+
+          row.innerHTML = `
+            <td contenteditable="false">${event.eventName}</td>
+            <td contenteditable="false">${new Date(event.eventDate).toLocaleDateString()}</td>
+            <td contenteditable="false">${event.eventTime}</td>
+            <td contenteditable="false">${event.venue}</td>
+            <td contenteditable="false">${event.aboutEvent}</td>
+            <td contenteditable="false">${event.specialNotes}</td>
+            <td>${typeDropdown}</td>
+            <td><img src="${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
+            <td>
+                <button class="btn btn-primary btn-sm editBtn">Edit</button>
+                <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
+            </td>
+          `;
+
+          // Append the row to the table body
+          tableBody.appendChild(row);
+
+          // Add event listener to the Edit button
+          const editBtn = row.querySelector(".editBtn");
+          const typeDropdownElement = row.querySelector(".eventTypeDropdown");
+          editBtn.addEventListener("click", function () {
+            if (editBtn.textContent === "Edit") {
+              // Make the row editable
+              const cells = row.querySelectorAll("td[contenteditable]");
+              cells.forEach((cell) => cell.setAttribute("contenteditable", "true"));
+
+              // Enable the dropdown
+              typeDropdownElement.removeAttribute("disabled");
+
+              editBtn.textContent = "Save";
+            } else {
+              // Save the updated data
+              const updatedEvent = {
+                eventName: row.children[0].textContent,
+                eventDate: new Date(row.children[1].textContent).toISOString(),
+                eventTime: row.children[2].textContent,
+                venue: row.children[3].textContent,
+                aboutEvent: row.children[4].textContent,
+                specialNotes: row.children[5].textContent,
+                type: typeDropdownElement.value, // Get the selected value from the dropdown
+              };
+
+              // Make an AJAX request to save the changes
+              fetch(`/events/${event._id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedEvent),
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    alert("Event updated successfully");
+                  } else {
+                    alert("Failed to update event");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error updating event:", error);
+                });
+
+              // Make the row uneditable
+              const cells = row.querySelectorAll("td[contenteditable]");
+              cells.forEach((cell) => cell.setAttribute("contenteditable", "false"));
+
+              // Disable the dropdown
+              typeDropdownElement.setAttribute("disabled", "true");
+
+              editBtn.textContent = "Edit";
+            }
+          });
+
+          // Add event listener to the Delete button
+          const deleteBtn = row.querySelector(".deleteBtn");
+          deleteBtn.addEventListener("click", function () {
+            const confirmed = confirm("Are you sure you want to delete this event?");
+            if (confirmed) {
+              // Make an AJAX request to delete the event
+              fetch(`/events/${event._id}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    // Remove the row from the table
+                    row.remove();
+                    alert("Event deleted successfully");
+                  } else {
+                    alert("Failed to delete event");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error deleting event:", error);
+                });
+            }
+          });
         });
       }
     })

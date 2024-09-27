@@ -13,4 +13,26 @@ function getEventsByUserId(userId, callback) {
   });
 }
 
-module.exports = { getEventsByUserId };
+function updateEventById(eventId, updatedEvent, callback) {
+  collection.updateOne(
+    { _id: new require("mongodb").ObjectID(eventId) },
+    { $set: updatedEvent },
+    (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+    }
+  );
+}
+
+function deleteEventById(eventId, callback) {
+  collection.deleteOne({ _id: new require("mongodb").ObjectID(eventId) }, (err, result) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, result);
+  });
+}
+
+module.exports = { getEventsByUserId, updateEventById, deleteEventById };
