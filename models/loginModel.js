@@ -12,4 +12,5 @@ function findUserByEmail(email, callback) {
     collection.findOne({ email: email }, callback); //Function to findUser for signin
 }
 
+
 module.exports = { createUser, findUserByEmail };

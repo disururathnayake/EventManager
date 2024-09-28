@@ -28,6 +28,88 @@ $(document).ready(function () {
   });
 });
 
+// $(document).ready(function () {
+//   $("#signIn").click(function (event) {
+//     event.preventDefault();
+
+//     let userCredentials = {
+//       email: $("#inputEmail").val(),
+//       password: $("#inputPassword").val(),
+//     };
+
+//     $.ajax({
+//       url: "/api/users/login",
+//       type: "POST",
+//       contentType: "application/json",
+//       data: JSON.stringify(userCredentials),
+//       success: function (response) {
+//         // Redirect to dashboard.html on successful login
+//         window.location.href = "dashboard.html";
+//       },
+//       error: function (xhr, status, error) {
+//         console.error("Login failed: " + error);
+//         alert("Login failed: Please check your credentials."); // Provide feedback to the user
+//       },
+//     });
+//   });
+// });
+
+// $(document).ready(function () {
+//   $("#createAccount").click(function (event) {
+//     event.preventDefault();
+
+//     let user = {
+//       firstName: $("#inputFirstName").val(),
+//       lastName: $("#inputLastName").val(),
+//       email: $("#inputEmail").val(),
+//       password: $("#inputPassword").val(),
+//     };
+
+//     // AJAX call to register a user
+//     $.ajax({
+//       url: "/api/users/register",
+//       type: "POST",
+//       contentType: "application/json",
+//       data: JSON.stringify(user),
+//       success: function (response) {
+//         alert(response.message);
+//         if (response.statusCode === 201) {
+//           console.log("User registered successfully");
+//         }
+//       },
+//       error: function (xhr, status, error) {
+//         console.error("Registration failed: " + error);
+//       },
+//     });
+//   });
+// });
+
+// $(document).ready(function () {
+//   $("#signIn").click(function (event) {
+//     event.preventDefault();
+
+//     let userCredentials = {
+//       email: $("#inputEmail").val(),
+//       password: $("#inputPassword").val(),
+//     };
+
+//     $.ajax({
+//       url: "/api/users/login",
+//       type: "POST",
+//       contentType: "application/json",
+//       data: JSON.stringify(userCredentials),
+//       success: function (response) {
+//         // Redirect to dashboard.html on successful login
+//         window.location.href = "dashboard.html";
+//       },
+//       error: function (xhr, status, error) {
+//         console.error("Login failed: " + error);
+//         alert("Login failed: Please check your credentials."); // Provide feedback to the user
+//       },
+//     });
+//   });
+// });
+
 $(document).ready(function () {
   $("#signIn").click(function (event) {
     event.preventDefault();
@@ -43,70 +125,38 @@ $(document).ready(function () {
       contentType: "application/json",
       data: JSON.stringify(userCredentials),
       success: function (response) {
-        // Redirect to dashboard.html on successful login
-        window.location.href = "dashboard.html";
-      },
-      error: function (xhr, status, error) {
-        console.error("Login failed: " + error);
-        alert("Login failed: Please check your credentials."); // Provide feedback to the user
-      },
-    });
-  });
-});
-
-$(document).ready(function () {
-  $("#createAccount").click(function (event) {
-    event.preventDefault();
-
-    let user = {
-      firstName: $("#inputFirstName").val(),
-      lastName: $("#inputLastName").val(),
-      email: $("#inputEmail").val(),
-      password: $("#inputPassword").val(),
-    };
-
-    // AJAX call to register a user
-    $.ajax({
-      url: "/api/users/register",
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(user),
-      success: function (response) {
-        alert(response.message);
-        if (response.statusCode === 201) {
-          console.log("User registered successfully");
+        // Redirect based on the user's role
+        if (response.role === "admin") {
+          window.location.href = "adminDashboard.html";
+        } else if (response.role === "user") {
+          window.location.href = "dashboard.html";
+        } else {
+          alert("Invalid role or access.");
         }
       },
       error: function (xhr, status, error) {
-        console.error("Registration failed: " + error);
+        console.error("Login failed: " + error);
+        alert("Login failed: Please check your credentials.");
       },
     });
   });
 });
 
-$(document).ready(function () {
-  $("#signIn").click(function (event) {
-    event.preventDefault();
 
-    let userCredentials = {
-      email: $("#inputEmail").val(),
-      password: $("#inputPassword").val(),
-    };
-
-    $.ajax({
-      url: "/api/users/login",
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(userCredentials),
-      success: function (response) {
-        // Redirect to dashboard.html on successful login
-        window.location.href = "dashboard.html";
-      },
-      error: function (xhr, status, error) {
-        console.error("Login failed: " + error);
-        alert("Login failed: Please check your credentials."); // Provide feedback to the user
-      },
-    });
+//logout
+$(document).ready(function() {
+  $('#logoutButton').click(function() {
+      $.ajax({
+          url: '/api/users/logout',  // Adjust the URL if necessary
+          type: 'POST',
+          success: function(response) {
+              alert(response.message); // Show logout success message
+              window.location.href = '/'; // Redirect to login page
+          },
+          error: function(xhr, status, error) {
+              alert('Error logging out');
+          }
+      });
   });
 });
 
@@ -280,3 +330,5 @@ document.addEventListener("DOMContentLoaded", function () {
         '<tr><td colspan="4">Error loading events.</td></tr>';
     });
 });
+
+
