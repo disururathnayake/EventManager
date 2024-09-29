@@ -24,6 +24,10 @@ app.use(express.static(__dirname + "/"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Admin routes
+const adminRouter = require('./routers/adminRouter.js');
+app.use('/admin', adminRouter);
+
 const userRouter = require("./routers/router");
 app.use("/api/users", userRouter);
 
