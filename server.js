@@ -9,6 +9,11 @@ const { Socket } = require("socket.io");
 let http = require("http").createServer(app);
 let io = require("socket.io")(http);
 
+const fs = require('fs');
+const path = require('path');
+
+const uploadDir = path.join(__dirname, 'uploads');
+
 let userIdCounter = 1;
 
 app.use(
