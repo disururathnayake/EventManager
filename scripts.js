@@ -258,4 +258,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+const addEventCards = (events) => {
+  events.forEach(event => {
+    let cardHTML = `
+      <div class="col s4">
+        <div class="card medium">
+          
+          <div class="card-content">
+            <span class="card-title activator grey-text text-darken-4">${event.eventName}</span>
+            
+          </div>
+          <div class="card-reveal">
+            <span class="card-title grey-text text-darken-4">Date : ${event.eventDate} Time : ${event.eventTime}</span>
+            <p>${event.aboutEvent}</p>
+          </div>
+        </div>
+      </div>
+      
+    `;
+    $("#eventsCardContainer").append(cardHTML);
+  });
+}
 
+function fetchEvents() {
+  $.get("/reviewevents", (result) => {
+    if (result.length > 0) {
+      addEventCards(result);
+    } else {
+      $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">No events found.</p></div>');
+    }
+  }).fail(() => {
+    $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">Error loading events.</p></div>');
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchEvents();
+});
