@@ -28,87 +28,7 @@ $(document).ready(function () {
   });
 });
 
-// $(document).ready(function () {
-//   $("#signIn").click(function (event) {
-//     event.preventDefault();
 
-//     let userCredentials = {
-//       email: $("#inputEmail").val(),
-//       password: $("#inputPassword").val(),
-//     };
-
-//     $.ajax({
-//       url: "/api/users/login",
-//       type: "POST",
-//       contentType: "application/json",
-//       data: JSON.stringify(userCredentials),
-//       success: function (response) {
-//         // Redirect to dashboard.html on successful login
-//         window.location.href = "dashboard.html";
-//       },
-//       error: function (xhr, status, error) {
-//         console.error("Login failed: " + error);
-//         alert("Login failed: Please check your credentials."); // Provide feedback to the user
-//       },
-//     });
-//   });
-// });
-
-// $(document).ready(function () {
-//   $("#createAccount").click(function (event) {
-//     event.preventDefault();
-
-//     let user = {
-//       firstName: $("#inputFirstName").val(),
-//       lastName: $("#inputLastName").val(),
-//       email: $("#inputEmail").val(),
-//       password: $("#inputPassword").val(),
-//     };
-
-//     // AJAX call to register a user
-//     $.ajax({
-//       url: "/api/users/register",
-//       type: "POST",
-//       contentType: "application/json",
-//       data: JSON.stringify(user),
-//       success: function (response) {
-//         alert(response.message);
-//         if (response.statusCode === 201) {
-//           console.log("User registered successfully");
-//         }
-//       },
-//       error: function (xhr, status, error) {
-//         console.error("Registration failed: " + error);
-//       },
-//     });
-//   });
-// });
-
-// $(document).ready(function () {
-//   $("#signIn").click(function (event) {
-//     event.preventDefault();
-
-//     let userCredentials = {
-//       email: $("#inputEmail").val(),
-//       password: $("#inputPassword").val(),
-//     };
-
-//     $.ajax({
-//       url: "/api/users/login",
-//       type: "POST",
-//       contentType: "application/json",
-//       data: JSON.stringify(userCredentials),
-//       success: function (response) {
-//         // Redirect to dashboard.html on successful login
-//         window.location.href = "dashboard.html";
-//       },
-//       error: function (xhr, status, error) {
-//         console.error("Login failed: " + error);
-//         alert("Login failed: Please check your credentials."); // Provide feedback to the user
-//       },
-//     });
-//   });
-// });
 
 $(document).ready(function () {
   $("#signIn").click(function (event) {
@@ -165,22 +85,29 @@ $(document).ready(function () {
   $("#addEventButton").click(function (event) {
     event.preventDefault();
 
-    let eventData = {
-      eventName: $("#eventName").val(),
-      eventDate: $("#eventDate").val(),
-      eventTime: $("#eventTime").val(),
-      venue: $("#venue").val(),
-      aboutEvent: $("#aboutEvent").val(),
-      specialNotes: $("#specialNotes").val(),
-      type: $('input[name="eventType"]:checked').val(),
-      eventPhoto: $("#eventPhoto").val(),
-    };
+
+    let formData = new FormData();
+
+    formData.append("eventName", $("#eventName").val());
+    formData.append("eventDate", $("#eventDate").val());
+    formData.append("eventTime", $("#eventTime").val());
+    formData.append("venue", $("#venue").val());
+    formData.append("aboutEvent", $("#aboutEvent").val());
+    formData.append("specialNotes", $("#specialNotes").val());
+    formData.append("type", $('input[name="eventType"]:checked').val());
+
+    let eventPhoto = $("#eventPhoto")[0].files[0]; 
+    if (eventPhoto) {
+      formData.append("eventPhoto", eventPhoto); 
+    }
+
 
     $.ajax({
       url: "/api/users/addEvent",
       type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(eventData),
+      data: formData,
+      processData: false, // Important for file uploads
+      contentType: false, // Important for file uploads
       success: function (response) {
         alert(response.message);
         // Optionally redirect or clear the form
@@ -230,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td contenteditable="false">${event.aboutEvent}</td>
             <td contenteditable="false">${event.specialNotes}</td>
             <td>${typeDropdown}</td>
-            <td><img src="${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
+            <td><img src="/uploads/${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
             <td>
                 <button class="btn btn-primary btn-sm editBtn">Edit</button>
                 <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
