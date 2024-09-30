@@ -262,23 +262,69 @@ const addEventCards = (events) => {
   events.forEach(event => {
     let cardHTML = `
       <div class="col s4">
-        <div class="card medium">
-          
+        <div class="card">
+          <img src="/uploads/${event.eventPhoto}" alt="Event Image">
           <div class="card-content">
-            <span class="card-title activator grey-text text-darken-4">${event.eventName}</span>
-            
+            <p>
+              <span class="card-title activator grey-text text-darken-4">Name: ${event.eventName}</span>
+            </p>
+            <p>
+              <span>Date: ${new Date(event.eventDate).toLocaleDateString()}</span>
+            </p>
+            <p>
+              <span>Time: ${event.eventTime}</span>
+            </p>
+            <p>${event.aboutEvent}</p>
           </div>
           <div class="card-reveal">
-            <span class="card-title grey-text text-darken-4">Date : ${event.eventDate} Time : ${event.eventTime}</span>
-            <p>${event.aboutEvent}</p>
+            <div class="event-comments">
+              <h6>Leave a Comment:</h6>
+              <textarea id="comment-${event.eventId}" placeholder="Add your comment here"></textarea>
+              
+              <h6>Rate this event:</h6>
+              <div class="star-rating">
+                ${[5, 4, 3, 2, 1].map(star => `
+                  <input type="radio" id="star${star}-${event.eventId}" name="rating-${event.eventId}" value="${star}" />
+                  <label for="star${star}-${event.eventId}">&#9733;</label>
+                `).join('')}
+              </div>
+              
+              <button class="submit-btn" data-event-id="${event.eventId}">Submit</button>
+            </div>
           </div>
         </div>
       </div>
-      
     `;
     $("#eventsCardContainer").append(cardHTML);
   });
-}
+
+  
+  $(".submit-btn").on("click", function() {
+    const eventId = $(this).data("event-id");
+    const comment = $(`#comment-${eventId}`).val();
+    const rating = $(`input[name="rating-${eventId}"]:checked`).val();
+
+    if (comment && rating) {
+      
+      $.post("/reviewevents/submitComment", {
+        eventId,
+        comment,
+        rating
+      }, function(response) {
+        if (response.success) {
+          alert("Comment and rating submitted successfully!");
+        } else {
+          alert("Failed to submit comment.");
+        }
+      }).fail(() => {
+        alert("Error submitting comment.");
+      });
+    } else {
+      alert("Please provide a comment and a rating.");
+    }
+  });
+};
+
 
 function fetchEvents() {
   $.get("/reviewevents", (result) => {
