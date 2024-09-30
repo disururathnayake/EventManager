@@ -34,6 +34,9 @@ app.use("/api/users", userRouter);
 const eventsRouter = require("./routers/eventsRouter"); // Event-related routes
 app.use("/events", eventsRouter);
 
+const reviewRouter = require("./routers/reviewRouter"); // Event-related routes
+app.use("/reviewevents", reviewRouter);
+
 http.listen(port, () => {
   console.log("express server started");
 });
