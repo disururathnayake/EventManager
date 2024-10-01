@@ -669,4 +669,67 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  function loadEvents() {
+    $.get("/events", function(events) {
+      const eventDropdown = $("#eventDropdown");
+      events.forEach(event => {
+        eventDropdown.append(`<option value="${event._id}">${event.eventName}</option>`);
+      });
+    }).fail(function() {
+      alert("Error loading events.");
+    });
+  }
 
+  // Function to fetch reviews for the selected event
+  function loadEvents() {
+    $.get("/reviewevents/all", function(events) {
+      const eventDropdown = $("#eventDropdown");
+      eventDropdown.empty(); // Clear previous options
+      eventDropdown.append('<option selected disabled>Choose an event</option>'); // Default option
+      events.forEach(event => {
+        eventDropdown.append(`<option value="${event.eventId}">${event.eventName}</option>`);
+      });
+    }).fail(function() {
+      alert("Error loading events.");
+    });
+  }
+  
+  // Function to fetch reviews for the selected event
+  function loadReviews(eventId) {
+    $.get(`/reviewevents/${eventId}`, function(reviews) {
+      const reviewsContainer = $("#reviewsContainer");
+      reviewsContainer.empty(); // Clear previous reviews
+      if (reviews.length > 0) {
+        reviews.forEach(review => {
+          reviewsContainer.append(`
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Rating: ${review.rating} &#9733;</h5>
+                <p class="card-text">${review.comment}</p>
+                <p class="text-muted">Reviewed on: ${new Date(review.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+          `);
+        });
+      } else {
+        reviewsContainer.append('<p class="text-muted">No reviews found for this event.</p>');
+      }
+    }).fail(function() {
+      alert("Error loading reviews.");
+    });
+  }
+  
+  // Load events into the dropdown when the page loads
+  $(document).ready(function() {
+    loadEvents();
+  
+    // Load reviews when the search button is clicked
+    $("#searchReviewsBtn").on("click", function() {
+      const selectedEventId = $("#eventDropdown").val();
+      if (selectedEventId) {
+        loadReviews(selectedEventId);
+      } else {
+        alert("Please select an event.");
+      }
+    });
+  });
