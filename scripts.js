@@ -258,6 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+//Review
 const addEventCards = (events) => {
   events.forEach(event => {
     let cardHTML = `
@@ -341,3 +342,66 @@ function fetchEvents() {
 document.addEventListener("DOMContentLoaded", function () {
   fetchEvents();
 });
+
+// Fetch latest 5 events and display as cards
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("/events", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((events) => {
+      const eventContainer = document.getElementById("latestEventsContainer");
+
+      if (events.length === 0) {
+        eventContainer.innerHTML = "<p>No recent events found.</p>";
+      } else {
+        events.forEach((event) => {
+          const card = document.createElement("div");
+          card.classList.add("col-md-4", "mb-4"); // Bootstrap classes for layout
+
+          // Create card with event name, image, date, and venue
+          card.innerHTML = `
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">${event.eventName}</h5>
+                <img src="/uploads/${event.eventPhoto}" class="card-img-top" alt="Event Photo" style="max-height: 200px; object-fit: cover; margin-top: 15px;">
+                <p class="card-text mt-3">
+                  <strong>Date:</strong> ${new Date(event.eventDate).toLocaleDateString()}<br>
+                  <strong>Venue:</strong> ${event.venue}
+                </p>
+              </div>
+            </div>
+          `;
+
+          eventContainer.appendChild(card); // Add the card to the container
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching latest events:", error);
+      document.getElementById("latestEventsContainer").innerHTML =
+        "<p>Error loading latest events.</p>";
+    });
+});
+
+  //add hover effects to all the cards
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll('.card');
+    
+    // Loop through each card and add 'visible' class to trigger the animation
+    cards.forEach(card => {
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 100); // Delay between cards for staggered effect
+    });
+  });
+
+
