@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Add Events</title>
+    <title>Book Event</title>
     <link
       href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
       rel="stylesheet"
@@ -68,7 +68,7 @@
             <li><a class="dropdown-item" href="#!">Settings</a></li>
             <li><a class="dropdown-item" href="#!">Activity Log</a></li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" id="logoutButton">Logout</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
         </li>
       </ul>
@@ -102,23 +102,6 @@
                 </div>
                 Event Calendar
               </a>
-
-              <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReviews" aria-expanded="false" aria-controls="collapseReviews">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-star"></i>
-                </div>
-                Review Management
-                <div class="sb-sidenav-collapse-arrow">
-                  <i class="fas fa-angle-down"></i>
-                </div>
-              </a>
-              <div class="collapse" id="collapseReviews" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                <nav class="sb-sidenav-menu-nested nav">
-                  <a class="nav-link" href="addReview.html">Add Review</a>
-                  <a class="nav-link" href="viewReviews.html">View Reviews</a>
-                </nav>
-              </div>
-
               <!-- New Booking Details Link -->
               <a class="nav-link" href="booking_details.html">
                 <div class="sb-nav-link-icon">
@@ -133,99 +116,68 @@
                 </div>
                 Manage Bookings
               </a>
-              <!-- Feedback Forum Link -->
-              <a class="nav-link" href="feedbackForum.html">
+            <!-- Feedback Forum Link -->
+            <a class="nav-link" href="feedbackForum.html">
                 <div class="sb-nav-link-icon">
-                  <i class="fas fa-comment-alt"></i>
+                    <i class="fas fa-comment-alt"></i>
                 </div>
                 Feedback Forum
-              </a>
-              <!-- manage_feedback Link -->
+                </a>
+                <!-- manage_feedback Link -->
               <a class="nav-link" href="manage_feedback.html">
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-comment-alt"></i>
                 </div>
                 Manage Feedback
               </a>
-
             </div>
           </div>
         </nav>
       </div>
 
       <div class="container mt-5">
-        <h2>Add Event</h2>
-        <form id="addEventForm">
+        <h2>Book Event</h2>
+        <form id="bookingForm">
           <div class="mb-3">
-            <label for="eventName" class="form-label">Event Name</label>
-            <input type="text" class="form-control" id="eventName" required />
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" required />
           </div>
           <div class="mb-3">
-            <label for="eventDate" class="form-label">Event Date</label>
-            <input type="date" class="form-control" id="eventDate" required />
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" required />
           </div>
           <div class="mb-3">
-            <label for="eventTime" class="form-label">Event Time</label>
-            <input type="time" class="form-control" id="eventTime" required />
+            <label for="event" class="form-label">Select Event</label>
+            <select id="event" class="form-select" required>
+              <option value="">Select an event...</option>
+            </select>
           </div>
+
           <div class="mb-3">
-            <label for="venue" class="form-label">Venue</label>
-            <input type="text" class="form-control" id="venue" required />
+            <label for="tickets" class="form-label">Number of Tickets</label>
+            <input type="number" class="form-control" id="tickets" required />
           </div>
+
           <div class="mb-3">
-            <label for="aboutEvent" class="form-label">About the Event</label>
+            <label for="message" class="form-label">Additional Message (Optional)</label>
             <textarea
               class="form-control"
-              id="aboutEvent"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="specialNotes" class="form-label">Special Notes</label>
-            <textarea
-              class="form-control"
-              id="specialNotes"
+              id="message"
               rows="2"
+              style="resize: none; height: 276px;"
             ></textarea>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Type</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="freeForAll"
-              value="Free for All"
-              checked
-            />
-            <label for="freeForAll">Free for All</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="paidTickets"
-              value="Paid - Tickets"
-            />
-            <label for="paidTickets">Paid - Tickets</label>
-          </div>
-
-          <div class="mb-3">
-            <label for="eventPhoto" class="form-label"
-              >Event Notice Photo (optional)</label
-            >
-            <input type="file" class="form-control" id="eventPhoto" />
-          </div>
-
-          <button type="submit" class="btn btn-primary" id="addEventButton">
-            Add Event
+          
+         
+          <button type="submit" class="btn btn-primary" id="bookEventButton">
+            Submit Booking
           </button>
         </form>
       </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="scripts.js"></script>
   </body>
 </html>
