@@ -28,6 +28,7 @@ $(document).ready(function () {
   });
 });
 
+
 $(document).ready(function () {
   $("#signIn").click(function (event) {
     event.preventDefault();
@@ -83,22 +84,29 @@ $(document).ready(function () {
   $("#addEventButton").click(function (event) {
     event.preventDefault();
 
-    let eventData = {
-      eventName: $("#eventName").val(),
-      eventDate: $("#eventDate").val(),
-      eventTime: $("#eventTime").val(),
-      venue: $("#venue").val(),
-      aboutEvent: $("#aboutEvent").val(),
-      specialNotes: $("#specialNotes").val(),
-      type: $('input[name="eventType"]:checked').val(),
-      eventPhoto: $("#eventPhoto").val(),
-    };
+
+    let formData = new FormData();
+
+    formData.append("eventName", $("#eventName").val());
+    formData.append("eventDate", $("#eventDate").val());
+    formData.append("eventTime", $("#eventTime").val());
+    formData.append("venue", $("#venue").val());
+    formData.append("aboutEvent", $("#aboutEvent").val());
+    formData.append("specialNotes", $("#specialNotes").val());
+    formData.append("type", $('input[name="eventType"]:checked').val());
+
+    let eventPhoto = $("#eventPhoto")[0].files[0]; 
+    if (eventPhoto) {
+      formData.append("eventPhoto", eventPhoto); 
+    }
+
 
     $.ajax({
       url: "/api/users/addEvent",
       type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(eventData),
+      data: formData,
+      processData: false, // Important for file uploads
+      contentType: false, // Important for file uploads
       success: function (response) {
         alert(response.message);
         // Optionally redirect or clear the form
@@ -413,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td contenteditable="false">${event.aboutEvent}</td>
             <td contenteditable="false">${event.specialNotes}</td>
             <td>${typeDropdown}</td>
-            <td><img src="${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
+            <td><img src="/uploads/${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
             <td>
                 <button class="btn btn-primary btn-sm editBtn">Edit</button>
                 <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
@@ -513,5 +521,152 @@ document.addEventListener("DOMContentLoaded", function () {
         '<tr><td colspan="4">Error loading events.</td></tr>';
     });
 });
+
+//Review
+const addEventCards = (events) => {
+  events.forEach(event => {
+    let cardHTML = `
+      <div class="col s4">
+        <div class="card">
+          <img src="/uploads/${event.eventPhoto}" alt="Event Image">
+          <div class="card-content">
+            <p>
+              <span class="card-title activator grey-text text-darken-4">Name: ${event.eventName}</span>
+            </p>
+            <p>
+              <span>Date: ${new Date(event.eventDate).toLocaleDateString()}</span>
+            </p>
+            <p>
+              <span>Time: ${event.eventTime}</span>
+            </p>
+            <p>${event.aboutEvent}</p>
+          </div>
+          <div class="card-reveal">
+            <div class="event-comments">
+              <h6>Leave a Comment:</h6>
+              <textarea id="comment-${event.eventId}" placeholder="Add your comment here"></textarea>
+              
+              <h6>Rate this event:</h6>
+              <div class="star-rating">
+                ${[5, 4, 3, 2, 1].map(star => `
+                  <input type="radio" id="star${star}-${event.eventId}" name="rating-${event.eventId}" value="${star}" />
+                  <label for="star${star}-${event.eventId}">&#9733;</label>
+                `).join('')}
+              </div>
+              
+              <button class="submit-btn" data-event-id="${event.eventId}">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    $("#eventsCardContainer").append(cardHTML);
+  });
+
+  
+  $(".submit-btn").on("click", function() {
+    const eventId = $(this).data("event-id");
+    const comment = $(`#comment-${eventId}`).val();
+    const rating = $(`input[name="rating-${eventId}"]:checked`).val();
+
+    if (comment && rating) {
+      
+      $.post("/reviewevents/submitComment", {
+        eventId,
+        comment,
+        rating
+      }, function(response) {
+        if (response.success) {
+          alert("Comment and rating submitted successfully!");
+        } else {
+          alert("Failed to submit comment.");
+        }
+      }).fail(() => {
+        alert("Error submitting comment.");
+      });
+    } else {
+      alert("Please provide a comment and a rating.");
+    }
+  });
+};
+
+
+function fetchEvents() {
+  $.get("/reviewevents", (result) => {
+    if (result.length > 0) {
+      addEventCards(result);
+    } else {
+      $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">No events found.</p></div>');
+    }
+  }).fail(() => {
+    $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">Error loading events.</p></div>');
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchEvents();
+});
+
+// Fetch latest 5 events and display as cards
+document.addEventListener("DOMContentLoaded", function () {
+  console.log('call event');
+  fetch("/events", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((events) => {
+      const eventContainer = document.getElementById("latestEventsContainer");
+
+      if (events.length === 0) {
+        eventContainer.innerHTML = "<p>No recent events found.</p>";
+      } else {
+        events.forEach((event) => {
+          const card = document.createElement("div");
+          card.classList.add("col-md-4", "mb-4"); // Bootstrap classes for layout
+
+          // Create card with event name, image, date, and venue
+          card.innerHTML = `
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">${event.eventName}</h5>
+                <img src="/uploads/${event.eventPhoto}" class="card-img-top" alt="Event Photo" style="max-height: 200px; object-fit: cover; margin-top: 15px;">
+                <p class="card-text mt-3">
+                  <strong>Date:</strong> ${new Date(event.eventDate).toLocaleDateString()}<br>
+                  <strong>Venue:</strong> ${event.venue}
+                </p>
+              </div>
+            </div>
+          `;
+
+          eventContainer.appendChild(card); // Add the card to the container
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching latest events:", error);
+      document.getElementById("latestEventsContainer").innerHTML =
+        "<p>Error loading latest events.</p>";
+    });
+});
+
+  //add hover effects to all the cards
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll('.card');
+    
+    // Loop through each card and add 'visible' class to trigger the animation
+    cards.forEach(card => {
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 100); // Delay between cards for staggered effect
+    });
+  });
 
 
