@@ -6,8 +6,6 @@ const feedbackRouter = require('./routers/feedbackRouter');
 const session = require('express-session');
 
 
-const session = require("express-session");
-
 const { Socket } = require("socket.io");
 let http = require("http").createServer(app);
 let io = require("socket.io")(http);
