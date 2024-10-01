@@ -28,8 +28,6 @@ $(document).ready(function () {
   });
 });
 
-
-
 $(document).ready(function () {
   $("#signIn").click(function (event) {
     event.preventDefault();
@@ -62,21 +60,20 @@ $(document).ready(function () {
   });
 });
 
-
 //logout
-$(document).ready(function() {
-  $('#logoutButton').click(function() {
-      $.ajax({
-          url: '/api/users/logout',  // Adjust the URL if necessary
-          type: 'POST',
-          success: function(response) {
-              alert(response.message); // Show logout success message
-              window.location.href = '/'; // Redirect to login page
-          },
-          error: function(xhr, status, error) {
-              alert('Error logging out');
-          }
-      });
+$(document).ready(function () {
+  $("#logoutButton").click(function () {
+    $.ajax({
+      url: "/api/users/logout", // Adjust the URL if necessary
+      type: "POST",
+      success: function (response) {
+        alert(response.message); // Show logout success message
+        window.location.href = "/"; // Redirect to login page
+      },
+      error: function (xhr, status, error) {
+        alert("Error logging out");
+      },
+    });
   });
 });
 
@@ -84,7 +81,6 @@ $(document).ready(function() {
 $(document).ready(function () {
   $("#addEventButton").click(function (event) {
     event.preventDefault();
-
 
     let formData = new FormData();
 
@@ -96,11 +92,10 @@ $(document).ready(function () {
     formData.append("specialNotes", $("#specialNotes").val());
     formData.append("type", $('input[name="eventType"]:checked').val());
 
-    let eventPhoto = $("#eventPhoto")[0].files[0]; 
+    let eventPhoto = $("#eventPhoto")[0].files[0];
     if (eventPhoto) {
-      formData.append("eventPhoto", eventPhoto); 
+      formData.append("eventPhoto", eventPhoto);
     }
-
 
     $.ajax({
       url: "/api/users/addEvent",
@@ -144,20 +139,28 @@ document.addEventListener("DOMContentLoaded", function () {
           // Create a dropdown for event types
           const typeDropdown = `
             <select class="eventTypeDropdown" disabled>
-              <option value="Free for All" ${event.type === "Free for All" ? "selected" : ""}>Free for All</option>
-              <option value="Paid - Tickets" ${event.type === "Paid - Tickets" ? "selected" : ""}>Paid - Tickets</option>
+              <option value="Free for All" ${
+                event.type === "Free for All" ? "selected" : ""
+              }>Free for All</option>
+              <option value="Paid - Tickets" ${
+                event.type === "Paid - Tickets" ? "selected" : ""
+              }>Paid - Tickets</option>
             </select>
           `;
 
           row.innerHTML = `
             <td contenteditable="false">${event.eventName}</td>
-            <td contenteditable="false">${new Date(event.eventDate).toLocaleDateString()}</td>
+            <td contenteditable="false">${new Date(
+              event.eventDate
+            ).toLocaleDateString()}</td>
             <td contenteditable="false">${event.eventTime}</td>
             <td contenteditable="false">${event.venue}</td>
             <td contenteditable="false">${event.aboutEvent}</td>
             <td contenteditable="false">${event.specialNotes}</td>
             <td>${typeDropdown}</td>
-            <td><img src="/uploads/${event.eventPhoto}" alt="Event Photo" style="max-width: 100px;"></td>
+            <td><img src="/uploads/${
+              event.eventPhoto
+            }" alt="Event Photo" style="max-width: 100px;"></td>
             <td>
                 <button class="btn btn-primary btn-sm editBtn">Edit</button>
                 <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
@@ -174,7 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (editBtn.textContent === "Edit") {
               // Make the row editable
               const cells = row.querySelectorAll("td[contenteditable]");
-              cells.forEach((cell) => cell.setAttribute("contenteditable", "true"));
+              cells.forEach((cell) =>
+                cell.setAttribute("contenteditable", "true")
+              );
 
               // Enable the dropdown
               typeDropdownElement.removeAttribute("disabled");
@@ -213,7 +218,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
               // Make the row uneditable
               const cells = row.querySelectorAll("td[contenteditable]");
-              cells.forEach((cell) => cell.setAttribute("contenteditable", "false"));
+              cells.forEach((cell) =>
+                cell.setAttribute("contenteditable", "false")
+              );
 
               // Disable the dropdown
               typeDropdownElement.setAttribute("disabled", "true");
@@ -225,7 +232,9 @@ document.addEventListener("DOMContentLoaded", function () {
           // Add event listener to the Delete button
           const deleteBtn = row.querySelector(".deleteBtn");
           deleteBtn.addEventListener("click", function () {
-            const confirmed = confirm("Are you sure you want to delete this event?");
+            const confirmed = confirm(
+              "Are you sure you want to delete this event?"
+            );
             if (confirmed) {
               // Make an AJAX request to delete the event
               fetch(`/events/${event._id}`, {
@@ -260,17 +269,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //Review
 const addEventCards = (events) => {
-  events.forEach(event => {
+  events.forEach((event) => {
     let cardHTML = `
       <div class="col s4">
         <div class="card">
           <img src="/uploads/${event.eventPhoto}" alt="Event Image">
           <div class="card-content">
             <p>
-              <span class="card-title activator grey-text text-darken-4">Name: ${event.eventName}</span>
+              <span class="card-title activator grey-text text-darken-4">Name: ${
+                event.eventName
+              }</span>
             </p>
             <p>
-              <span>Date: ${new Date(event.eventDate).toLocaleDateString()}</span>
+              <span>Date: ${new Date(
+                event.eventDate
+              ).toLocaleDateString()}</span>
             </p>
             <p>
               <span>Time: ${event.eventTime}</span>
@@ -280,17 +293,25 @@ const addEventCards = (events) => {
           <div class="card-reveal">
             <div class="event-comments">
               <h6>Leave a Comment:</h6>
-              <textarea id="comment-${event.eventId}" placeholder="Add your comment here"></textarea>
+              <textarea id="comment-${
+                event.eventId
+              }" placeholder="Add your comment here"></textarea>
               
               <h6>Rate this event:</h6>
               <div class="star-rating">
-                ${[5, 4, 3, 2, 1].map(star => `
+                ${[5, 4, 3, 2, 1]
+                  .map(
+                    (star) => `
                   <input type="radio" id="star${star}-${event.eventId}" name="rating-${event.eventId}" value="${star}" />
                   <label for="star${star}-${event.eventId}">&#9733;</label>
-                `).join('')}
+                `
+                  )
+                  .join("")}
               </div>
               
-              <button class="submit-btn" data-event-id="${event.eventId}">Submit</button>
+              <button class="submit-btn" data-event-id="${
+                event.eventId
+              }">Submit</button>
             </div>
           </div>
         </div>
@@ -299,25 +320,27 @@ const addEventCards = (events) => {
     $("#eventsCardContainer").append(cardHTML);
   });
 
-  
-  $(".submit-btn").on("click", function() {
+  $(".submit-btn").on("click", function () {
     const eventId = $(this).data("event-id");
     const comment = $(`#comment-${eventId}`).val();
     const rating = $(`input[name="rating-${eventId}"]:checked`).val();
 
     if (comment && rating) {
-      
-      $.post("/reviewevents/submitComment", {
-        eventId,
-        comment,
-        rating
-      }, function(response) {
-        if (response.success) {
-          alert("Comment and rating submitted successfully!");
-        } else {
-          alert("Failed to submit comment.");
+      $.post(
+        "/reviewevents/submitComment",
+        {
+          eventId,
+          comment,
+          rating,
+        },
+        function (response) {
+          if (response.success) {
+            alert("Comment and rating submitted successfully!");
+          } else {
+            alert("Failed to submit comment.");
+          }
         }
-      }).fail(() => {
+      ).fail(() => {
         alert("Error submitting comment.");
       });
     } else {
@@ -326,16 +349,19 @@ const addEventCards = (events) => {
   });
 };
 
-
 function fetchEvents() {
   $.get("/reviewevents", (result) => {
     if (result.length > 0) {
       addEventCards(result);
     } else {
-      $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">No events found.</p></div>');
+      $("#eventsCardContainer").html(
+        '<div class="col s12"><p class="center-align">No events found.</p></div>'
+      );
     }
   }).fail(() => {
-    $("#eventsCardContainer").html('<div class="col s12"><p class="center-align">Error loading events.</p></div>');
+    $("#eventsCardContainer").html(
+      '<div class="col s12"><p class="center-align">Error loading events.</p></div>'
+    );
   });
 }
 
@@ -372,9 +398,13 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="card h-100 shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">${event.eventName}</h5>
-                <img src="/uploads/${event.eventPhoto}" class="card-img-top" alt="Event Photo" style="max-height: 200px; object-fit: cover; margin-top: 15px;">
+                <img src="/uploads/${
+                  event.eventPhoto
+                }" class="card-img-top" alt="Event Photo" style="max-height: 200px; object-fit: cover; margin-top: 15px;">
                 <p class="card-text mt-3">
-                  <strong>Date:</strong> ${new Date(event.eventDate).toLocaleDateString()}<br>
+                  <strong>Date:</strong> ${new Date(
+                    event.eventDate
+                  ).toLocaleDateString()}<br>
                   <strong>Venue:</strong> ${event.venue}
                 </p>
               </div>
@@ -392,16 +422,79 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-  //add hover effects to all the cards
-  document.addEventListener("DOMContentLoaded", function () {
-    const cards = document.querySelectorAll('.card');
-    
-    // Loop through each card and add 'visible' class to trigger the animation
-    cards.forEach(card => {
-      setTimeout(() => {
-        card.classList.add('visible');
-      }, 100); // Delay between cards for staggered effect
-    });
+//add hover effects to all the cards
+document.addEventListener("DOMContentLoaded", function () {
+  const cards = document.querySelectorAll(".card");
+
+  // Loop through each card and add 'visible' class to trigger the animation
+  cards.forEach((card) => {
+    setTimeout(() => {
+      card.classList.add("visible");
+    }, 100); // Delay between cards for staggered effect
   });
+});
 
+// Get all events for calendar
+document.addEventListener("DOMContentLoaded", function () {
+  // Fetch and display events
+  fetch("/events", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // const tableBody = document.getElementById("eventsTableBody");
+      // tableBody.innerHTML = "";
 
+      var eventList = [];
+
+      if (data.length > 0) {
+        data.forEach((event) => {
+          console.log("event");
+          console.log(event);
+
+          // {
+          //   title: "Event 1",
+          //   start: "2024-10-01T10:00:00", // Start time (10:00 AM)
+          //   end: "2024-10-01T12:00:00", // End time (12:00 PM)
+          //   description: "This is event 1 description", // Custom field
+          // }
+
+          var eventItem = {
+            id: event._id,
+            title: event.eventName,
+            start: `${event.eventDate}T${event.eventTime}:00`,
+            description: `${event.aboutEvent}`,
+          };
+
+          eventList.push(eventItem);
+        });
+
+        $("#calendar").fullCalendar({
+          header: {
+            left: "prev,next today",
+            center: "title",
+            right: "month,agendaWeek,agendaDay",
+          },
+          events: eventList,
+          editable: true,
+          droppable: true, // allows for dragging and dropping
+          eventClick: function (event) {
+            // Show an alert with event details
+            alert(
+              "Event: " + event.title + "\nDescription: " + event.description
+            );
+          },
+        });
+      }
+
+      // console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching events:", error);
+      // document.getElementById("eventsTableBody").innerHTML =
+      //   '<tr><td colspan="4">Error loading events.</td></tr>';
+    });
+});
