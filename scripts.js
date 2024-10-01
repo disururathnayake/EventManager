@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Get all events for calendar
 document.addEventListener("DOMContentLoaded", function () {
   // Fetch and display events
-  fetch("/events", {
+  fetch("/events/all", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

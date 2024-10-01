@@ -5,6 +5,9 @@ const eventsController = require("../controllers/myeventsController");
 // Route to get events
 router.get("/", eventsController.getMyEvents);
 
+// Route to get events
+router.get("/all/", eventsController.getAllEvents);
+
 // Route to update an event
 router.put("/:id", eventsController.updateEvent);
 

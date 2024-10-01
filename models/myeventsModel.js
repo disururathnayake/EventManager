@@ -3,6 +3,16 @@ const client = require("../dbConnection");
 // Access the events collection
 const collection = client.db().collection("events");
 
+function findAllEvents(callback) {
+  // Find events where userId matches the logged-in user
+  collection.find({}).toArray((err, events) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, events); // Return the fetched events
+  });
+}
+
 function getEventsByUserId(userId, callback) {
   // Find events where userId matches the logged-in user
   collection.find({ userId: userId }).toArray((err, events) => {
@@ -27,12 +37,20 @@ function updateEventById(eventId, updatedEvent, callback) {
 }
 
 function deleteEventById(eventId, callback) {
-  collection.deleteOne({ _id: new require("mongodb").ObjectID(eventId) }, (err, result) => {
-    if (err) {
-      return callback(err, null);
+  collection.deleteOne(
+    { _id: new require("mongodb").ObjectID(eventId) },
+    (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
     }
-    callback(null, result);
-  });
+  );
 }
 
-module.exports = { getEventsByUserId, updateEventById, deleteEventById };
+module.exports = {
+  findAllEvents,
+  getEventsByUserId,
+  updateEventById,
+  deleteEventById,
+};
