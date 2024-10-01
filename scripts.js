@@ -345,6 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fetch latest 5 events and display as cards
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('call event');
   fetch("/events", {
     method: "GET",
     headers: {
