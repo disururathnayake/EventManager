@@ -11241,3 +11241,24 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-10px); /* Moves the card up */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adds a shadow */
+}
+
+.card {
+  opacity: 0; /* Initially hidden */
+  transform: translateY(20px); /* Slightly below the final position */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card.visible {
+  opacity: 1; /* Fully visible */
+  transform: translateY(0); /* Moves to the final position */
+}
+
