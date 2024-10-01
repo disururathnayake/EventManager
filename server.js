@@ -1,28 +1,27 @@
-let express = require("express");
-let app = express();
-let port = process.env.port || 3000;
-require("./dbConnection");
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+require('./dbConnection');
+const feedbackRouter = require('./routers/feedbackRouter');
+const session = require('express-session');
 
-const session = require("express-session");
-
-const { Socket } = require("socket.io");
-let http = require("http").createServer(app);
-let io = require("socket.io")(http);
-
-let userIdCounter = 1;
+const { Socket } = require('socket.io');
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
 app.use(
   session({
-    secret: "eventmanager",
+    secret: 'eventmanager',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: "auto", httpOnly: true },
+    cookie: { secure: 'auto', httpOnly: true },
   })
 );
 
-app.use(express.static(__dirname + "/"));
+app.use(express.static(__dirname + '/'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 
 // Admin routes
 const adminRouter = require('./routers/adminRouter.js');
@@ -31,9 +30,14 @@ app.use('/admin', adminRouter);
 const userRouter = require("./routers/router");
 app.use("/api/users", userRouter);
 
-const eventsRouter = require("./routers/eventsRouter"); // Event-related routes
-app.use("/events", eventsRouter);
+// Event-related routes
+const eventsRouter = require('./routers/eventsRouter');
+app.use('/events', eventsRouter);
 
+// Feedback-related routes
+app.use('/api/feedback', feedbackRouter);
+
+// Start the server
 http.listen(port, () => {
-  console.log("express server started");
+  console.log(`Express server started on port ${port}`);
 });

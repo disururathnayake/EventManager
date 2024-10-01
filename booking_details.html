@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Dashboard - SB Admin</title>
+    <title>Book Event</title>
     <link
       href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
       rel="stylesheet"
@@ -20,7 +20,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body class="sb-nav-fixed">
+  <body>
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
       <!-- Navbar Brand-->
       <a class="navbar-brand ps-3" href="dashboard.html">Event Manager</a>
@@ -68,7 +68,7 @@
             <li><a class="dropdown-item" href="#!">Settings</a></li>
             <li><a class="dropdown-item" href="#!">Activity Log</a></li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" id="logoutButton">Logout</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
         </li>
       </ul>
@@ -109,21 +109,21 @@
                 </div>
                 Booking Details
               </a>
-              <!-- Manage Bookings Link -->
-              <a class="nav-link" href="manage_bookings.html">
+               <!-- Manage Bookings Link -->
+               <a class="nav-link" href="manage_bookings.html">
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-book"></i>
                 </div>
                 Manage Bookings
               </a>
-              <!-- Feedback Forum Link -->
-              <a class="nav-link" href="feedbackForum.html">
+            <!-- Feedback Forum Link -->
+            <a class="nav-link" href="feedbackForum.html">
                 <div class="sb-nav-link-icon">
-                  <i class="fas fa-comment-alt"></i>
+                    <i class="fas fa-comment-alt"></i>
                 </div>
                 Feedback Forum
-              </a>
-              <!-- manage_feedback Link -->
+                </a>
+                <!-- manage_feedback Link -->
               <a class="nav-link" href="manage_feedback.html">
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-comment-alt"></i>
@@ -134,23 +134,50 @@
           </div>
         </nav>
       </div>
+
+      <div class="container mt-5">
+        <h2>Book Event</h2>
+        <form id="bookingForm">
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" required />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" required />
+          </div>
+          <div class="mb-3">
+            <label for="event" class="form-label">Select Event</label>
+            <select id="event" class="form-select" required>
+              <option value="">Select an event...</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="tickets" class="form-label">Number of Tickets</label>
+            <input type="number" class="form-control" id="tickets" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="message" class="form-label">Additional Message (Optional)</label>
+            <textarea
+              class="form-control"
+              id="message"
+              rows="2"
+              style="resize: none; height: 276px;"
+            ></textarea>
+          </div>
+          
+         
+          <button type="submit" class="btn btn-primary" id="bookEventButton">
+            Submit Booking
+          </button>
+        </form>
+      </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="scripts.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="assets/demo/chart-area-demo.js"></script>
-    <script src="assets/demo/chart-bar-demo.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-      crossorigin="anonymous"
-    ></script>
-    
   </body>
 </html>
