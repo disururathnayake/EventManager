@@ -19,10 +19,6 @@ const uploadDir = path.join(__dirname, 'uploads');
 
 let userIdCounter = 1;
 
-const { Socket } = require('socket.io');
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-
 
 app.use(
   session({
