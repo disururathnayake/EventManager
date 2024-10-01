@@ -676,12 +676,12 @@ document.addEventListener("DOMContentLoaded", function () {
         eventDropdown.append(`<option value="${event._id}">${event.eventName}</option>`);
       });
     }).fail(function() {
-      alert("Error loading events.");
+      
     });
   }
 
   // Function to fetch reviews for the selected event
-  function loadEvents() {
+  document.addEventListener("DOMContentLoaded", function () {
     $.get("/reviewevents/all", function(events) {
       const eventDropdown = $("#eventDropdown");
       eventDropdown.empty(); // Clear previous options
@@ -690,9 +690,9 @@ document.addEventListener("DOMContentLoaded", function () {
         eventDropdown.append(`<option value="${event.eventId}">${event.eventName}</option>`);
       });
     }).fail(function() {
-      alert("Error loading events.");
+      
     });
-  }
+  });
   
   // Function to fetch reviews for the selected event
   function loadReviews(eventId) {
@@ -715,6 +715,7 @@ document.addEventListener("DOMContentLoaded", function () {
         reviewsContainer.append('<p class="text-muted">No reviews found for this event.</p>');
       }
     }).fail(function() {
+      console.log('line 720');
       alert("Error loading reviews.");
     });
   }
