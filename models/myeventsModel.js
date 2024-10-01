@@ -36,8 +36,6 @@ function deleteEventById(eventId, callback) {
   });
 }
 
-module.exports = { getEventsByUserId, updateEventById, deleteEventById };
-// Function to fetch all available events (new function)
 function getAllEvents(callback) {
   // Fetch all events from the collection
   collection.find({}).toArray((err, events) => {
@@ -48,4 +46,8 @@ function getAllEvents(callback) {
   });
 }
 
-module.exports = { getEventsByUserId, getAllEvents };
+module.exports = { getEventsByUserId, updateEventById, deleteEventById,getAllEvents };
+// Function to fetch all available events (new function)
+
+
+
