@@ -85,5 +85,14 @@ const handleEventCreation = (req, res) => {
   });
 };
 
+const getEventCount = (req, res) => {
+  addeventsModel.getEventCount((err, count) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching event count' });
+    }
+    res.status(200).json({ totalEvents: count });
+  });
+};
 
-module.exports = { addEvent };
+
+module.exports = { addEvent, getEventCount };

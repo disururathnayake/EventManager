@@ -67,6 +67,10 @@ app.use('/api/feedback', feedbackRouter);
 const reviewRouter = require("./routers/reviewRouter"); // Event-related routes
 app.use("/reviewevents", reviewRouter);
 
+// Use the event count router
+const eventCountRouter = require("./routers/eventCountRouter");
+app.use('/events', eventCountRouter);
+
 
 
 io.on('connection', (socket) => {
