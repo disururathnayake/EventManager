@@ -28,6 +28,7 @@ $(document).ready(function () {
   });
 });
 
+
 $(document).ready(function () {
   $("#signIn").click(function (event) {
     event.preventDefault();
@@ -43,6 +44,9 @@ $(document).ready(function () {
       contentType: "application/json",
       data: JSON.stringify(userCredentials),
       success: function (response) {
+
+        initSocket(true);
+        
         // Redirect based on the user's role
         if (response.role === "admin") {
           window.location.href = "adminDashboard.html";
@@ -64,11 +68,11 @@ $(document).ready(function () {
 $(document).ready(function () {
   $("#logoutButton").click(function () {
     $.ajax({
-      url: "/api/users/logout", // Adjust the URL if necessary
+      url: "/api/users/logout", 
       type: "POST",
       success: function (response) {
-        alert(response.message); // Show logout success message
-        window.location.href = "/"; // Redirect to login page
+        alert(response.message); 
+        window.location.href = "/"; 
       },
       error: function (xhr, status, error) {
         alert("Error logging out");
@@ -76,6 +80,7 @@ $(document).ready(function () {
     });
   });
 });
+
 
 // Add Event
 $(document).ready(function () {
@@ -115,6 +120,271 @@ $(document).ready(function () {
     });
   });
 });
+
+
+$(document).ready(function () {
+  // Fetch available events and populate the dropdown
+  $.ajax({
+    url: "/events/all", // The endpoint to fetch all events
+    type: "GET",
+    success: function (events) {
+      const eventSelect = $("#event");
+      eventSelect.empty(); // Clear any previous options
+      eventSelect.append('<option value="">Select an event...</option>'); // Default option
+
+      events.forEach(function (event) {
+        eventSelect.append(`<option value="${event.eventId}">${event.eventName}</option>`);
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error("Failed to fetch events: " + error);
+    },
+  });
+});
+
+$(document).ready(function () {
+  $("#bookEventButton").click(function (event) {
+    event.preventDefault();
+
+    let bookingData = {
+      name: $("#name").val(),
+      email: $("#email").val(),
+      eventId: $("#event").val(),
+      eventName: $("#event option:selected").text(), // Get the event name from dropdown
+      tickets: $("#tickets").val(),
+      message: $("#message").val(),
+    };
+
+    // AJAX call to submit booking data
+    $.ajax({
+      url: "/events/book", // Ensure this matches your route in `eventsRouter.js`
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(bookingData),
+      success: function (response) {
+        alert("Booking created successfully! A confirmation email has been sent.");
+        // Optionally reset the form after successful booking
+        $("#bookingForm")[0].reset();
+      },
+      error: function (xhr, status, error) {
+        console.error("Booking failed: " + error);
+        alert("Booking failed: " + xhr.responseJSON.message);
+      },
+    });
+  });
+});
+
+$(document).ready(function () {
+  // Fetch all bookings and display them
+  fetch("/events/bookings")
+    .then((response) => response.json())
+    .then((bookings) => {
+      const tableBody = $("#bookingsTableBody");
+      tableBody.empty(); // Clear existing rows
+
+      if (bookings.length === 0) {
+        tableBody.append("<tr><td colspan='6'>No bookings found</td></tr>");
+      } else {
+        bookings.forEach((booking) => {
+          const row = `
+            <tr>
+              <td>${booking.name}</td>
+              <td>${booking.email}</td>
+              <td>${booking.eventName}</td>
+              <td>${booking.tickets}</td>
+              <td>${new Date(booking.bookingDate).toLocaleDateString()}</td>
+              <td>
+                <button class="btn btn-primary btn-sm edit-booking" data-id="${booking.bookingId}">Edit</button>
+                <button class="btn btn-danger btn-sm delete-booking" data-id="${booking.bookingId}">Delete</button>
+              </td>
+            </tr>`;
+          tableBody.append(row);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching bookings:", error);
+      $("#bookingsTableBody").html('<tr><td colspan="6">Error loading bookings.</td></tr>');
+    });
+
+  // Handle booking deletion
+  $(document).on("click", ".delete-booking", function () {
+    const bookingId = $(this).data("id");
+
+    if (confirm("Are you sure you want to delete this booking?")) {
+      fetch(`/events/delete/${bookingId}`, { method: "DELETE" })
+        .then((response) => response.json())
+        .then((data) => {
+          alert(data.message);
+          location.reload(); // Reload the page after deletion
+        })
+        .catch((error) => {
+          console.error("Error deleting booking:", error);
+          alert("Failed to delete booking");
+        });
+    }
+  });
+
+  // Handle Edit Booking button click
+  $(document).on("click", ".edit-booking", function () {
+    const bookingId = $(this).data("id");
+    const bookingRow = $(this).closest("tr");
+    const name = bookingRow.find("td:eq(0)").text();
+    const email = bookingRow.find("td:eq(1)").text();
+    const tickets = bookingRow.find("td:eq(3)").text();
+
+    // Populate modal fields with current booking data
+    $("#editBookingId").val(bookingId);
+    $("#editName").val(name);
+    $("#editEmail").val(email);
+    $("#editTickets").val(tickets);
+
+    // Show the edit modal
+    $("#editBookingModal").modal("show");
+  });
+
+  // Handle Booking Edit form submission
+  $("#editBookingForm").submit(function (event) {
+    event.preventDefault();
+
+    const bookingId = $("#editBookingId").val();
+    const updatedBooking = {
+      name: $("#editName").val(),
+      email: $("#editEmail").val(),
+      tickets: $("#editTickets").val(),
+    };
+
+    // AJAX call to update booking
+    $.ajax({
+      url: `/events/update/${bookingId}`,
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify(updatedBooking),
+      success: function (response) {
+        alert("Booking updated successfully!");
+        $("#editBookingModal").modal("hide");
+        location.reload(); // Optionally refresh the page to show updated booking
+      },
+      error: function (xhr, status, error) {
+        console.error("Error updating booking:", error);
+        alert("Failed to update booking");
+      },
+    });
+  });
+});
+
+$(document).ready(function () {
+  // Fetch all bookings and display them
+  fetch("/events/bookings")
+    .then((response) => response.json())
+    .then((bookings) => {
+      const tableBody = $("#bookingsTableBody");
+      tableBody.empty(); // Clear existing rows
+
+      if (bookings.length === 0) {
+        tableBody.append("<tr><td colspan='6'>No bookings found</td></tr>");
+      } else {
+        bookings.forEach((booking) => {
+          const row = `
+            <tr>
+              <td>${booking.name}</td>
+              <td>${booking.email}</td>
+              <td>${booking.eventName}</td>
+              <td>${booking.tickets}</td>
+              <td>${new Date(booking.bookingDate).toLocaleDateString()}</td>
+              <td>
+                <button class="btn btn-primary btn-sm edit-booking" data-id="${booking.bookingId}">Edit</button>
+                <button class="btn btn-danger btn-sm delete-booking" data-id="${booking.bookingId}">Delete</button>
+              </td>
+            </tr>`;
+          tableBody.append(row);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching bookings:", error);
+      $("#bookingsTableBody").html('<tr><td colspan="6">Error loading bookings.</td></tr>');
+    });
+
+  // Handle booking deletion
+  $(document).on("click", ".delete-booking", function () {
+    const bookingId = $(this).data("id");
+
+    if (confirm("Are you sure you want to delete this booking?")) {
+      fetch(`/events/delete/${bookingId}`, { method: "DELETE" })
+        .then((response) => response.json())
+        .then((data) => {
+          alert(data.message);
+          location.reload(); // Reload the page after deletion
+        })
+        .catch((error) => {
+          console.error("Error deleting booking:", error);
+          alert("Failed to delete booking");
+        });
+    }
+  });
+});
+
+$(document).ready(function () {
+  // Function to validate inputs
+  function validateInput(inputId, errorMsgId, regex, errorMessage) {
+      const inputValue = $("#" + inputId).val();
+      const isValid = regex.test(inputValue);
+      if (!isValid) {
+          $("#" + errorMsgId).text(errorMessage);
+      } else {
+          $("#" + errorMsgId).text("");
+      }
+      return isValid;
+  }
+
+  // Function to validate the entire form
+  function validateForm() {
+      const isNameValid = validateInput("name", "nameMsg", /^[a-zA-Z\s]+$/, "Please enter a valid full name");
+      const isEmailValid = validateInput("email", "emailMsg", /^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please enter a valid email address");
+      const isPhoneValid = validateInput("phone", "phoneMsg", /^\d{10}$/, "Phone number must be exactly 10 digits");
+      const isQueryValid = validateInput("query", "queryMsg", /^(?!\s*$).+/, "Please enter your query/feedback");
+
+      return isNameValid && isEmailValid && isPhoneValid && isQueryValid;
+  }
+
+  // Handling form submission
+  $("#queryForm").on("submit", function (event) {
+      event.preventDefault(); // Prevent the form from submitting normally
+
+      if (validateForm()) {
+          // Gather form data
+          const formData = {
+              name: $("#name").val(),
+              email: $("#email").val(),
+              phone: $("#phone").val(),
+              query: $("#query").val(),
+          };
+
+          // Submit the form data via AJAX
+          $.ajax({
+              url: "/api/feedback", // Update with your backend API URL
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify(formData),
+              success: function (response) {
+                  // Handle success - you can display a message or redirect the user
+                  alert("Your feedback has been submitted successfully!");
+                  $("#queryForm")[0].reset(); // Reset the form
+              },
+              error: function (xhr, status, error) {
+                  // Handle error - display the error message
+                  $("#errorMessage").text("Failed to submit the feedback. Please try again.");
+                  console.error("Error submitting feedback:", error);
+              },
+          });
+      } else {
+          $("#errorMessage").text("Please correct the errors and try again.");
+      }
+  });
+});
+
+
 
 //Manage events
 document.addEventListener("DOMContentLoaded", function () {
@@ -371,6 +641,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fetch latest 5 events and display as cards
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('call event');
   fetch("/events", {
     method: "GET",
     headers: {
@@ -433,6 +704,73 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 100); // Delay between cards for staggered effect
   });
 });
+
+
+  function loadEvents() {
+    $.get("/events", function(events) {
+      const eventDropdown = $("#eventDropdown");
+      events.forEach(event => {
+        eventDropdown.append(`<option value="${event._id}">${event.eventName}</option>`);
+      });
+    }).fail(function() {
+      
+    });
+  }
+
+  // Function to fetch reviews for the selected event
+  document.addEventListener("DOMContentLoaded", function () {
+    $.get("/reviewevents/all", function(events) {
+      const revieweventDropdown = $("#revieweventDropdown");
+      revieweventDropdown.empty(); // Clear previous options
+      revieweventDropdown.append('<option selected disabled>Choose an event</option>'); // Default option
+      events.forEach(event => {
+        revieweventDropdown.append(`<option value="${event.eventId}">${event.eventName}</option>`);
+      });
+    }).fail(function() {
+      
+    });
+  });
+  
+  // Function to fetch reviews for the selected event
+  function loadReviews(eventId) {
+    $.get(`/reviewevents/${eventId}`, function(reviews) {
+      const reviewsContainer = $("#reviewsContainer");
+      reviewsContainer.empty(); // Clear previous reviews
+      if (reviews.length > 0) {
+        reviews.forEach(review => {
+          reviewsContainer.append(`
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Rating: ${review.rating} &#9733;</h5>
+                <p class="card-text">${review.comment}</p>
+                <p class="text-muted">Reviewed on: ${new Date(review.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+          `);
+        });
+      } else {
+        reviewsContainer.append('<p class="text-muted">No reviews found for this event.</p>');
+      }
+    }).fail(function() {
+      console.log('line 720');
+      alert("Error loading reviews.");
+    });
+  }
+  
+  // Load events into the dropdown when the page loads
+  $(document).ready(function() {
+    loadEvents();
+  
+    // Load reviews when the search button is clicked
+    $("#searchReviewsBtn").on("click", function() {
+      const selectedEventId = $("#revieweventDropdown").val();
+      if (selectedEventId) {
+        loadReviews(selectedEventId);
+      } else {
+        alert("Please select an event.");
+      }
+    });
+  });
 
 // Get all events for calendar
 document.addEventListener("DOMContentLoaded", function () {
@@ -498,3 +836,32 @@ document.addEventListener("DOMContentLoaded", function () {
       //   '<tr><td colspan="4">Error loading events.</td></tr>';
     });
 });
+
+let socket = null;
+function initSocket(connect) {
+  if (connect) {
+      if (!socket) {
+          socket = io();  // Assumes your server is at the same host
+          console.log('Socket connected', socket);
+
+          socket.on('number', function(num) {
+              console.log('Received random number: ' + num);
+              // Optionally, display the number on the page
+          });
+      }
+  } else {
+      console.log('Attempting to disconnect, current socket:', socket);
+      
+      if (socket && socket.connected) {
+          socket.emit('logout');  // Notify the server about the logout
+          socket.disconnect();    // Disconnect the socket
+          console.log('Socket disconnected');
+      }
+      socket = null;  // Clear the reference to the socket object
+  }
+}
+
+
+
+
+

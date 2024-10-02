@@ -8,4 +8,9 @@ function createEvent(event, callback) {
   collection.insertOne(event, callback);
 }
 
-module.exports = { createEvent };
+
+function getEventCount(callback) {
+  collection.countDocuments({}, callback); // Get the count of all events
+}
+
+module.exports = { createEvent, getEventCount };
