@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
       const randomNum = Math.floor(Math.random() * 100);
       socket.emit('number', randomNum);
       console.log(`The user : ${socket.handshake.session.email} logged in to the application` );
-    }, 1000);
+    }, 10000);
   } else {
     console.log('No session userId available');
   }

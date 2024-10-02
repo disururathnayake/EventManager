@@ -11,137 +11,22 @@
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
   </head>
   <body class="sb-nav-fixed">
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-      <!-- Navbar Brand-->
-      <a class="navbar-brand ps-3" href="dashboard.html">Event Manager</a>
-      <!-- Sidebar Toggle-->
-      <button
-        class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
-        id="sidebarToggle"
-        href="#!"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
-      <!-- Navbar Search-->
-      <form
-        class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
-      >
-        <!-- <div class="input-group">
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Search for..."
-            aria-label="Search for..."
-            aria-describedby="btnNavbarSearch"
-          />
-          <button class="btn btn-primary" id="btnNavbarSearch" type="button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div> -->
-      </form>
-      <!-- Navbar-->
-      <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            id="navbarDropdown"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            ><i class="fas fa-user fa-fw"></i
-          ></a>
-          <ul
-            class="dropdown-menu dropdown-menu-end"
-            aria-labelledby="navbarDropdown"
-          >
-            <li><a class="dropdown-item" href="#!">Settings</a></li>
-            <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="index.html">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <div id="layoutSidenav">
-      <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-          <div class="sb-sidenav-menu">
-            <div class="nav">
-              <a class="nav-link" href="dashboard.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-tachometer-alt"></i>
-                </div>
-                Dashboard
-              </a>
-              <a class="nav-link" href="myevents.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-list-ul"></i>
-                </div>
-                Manage My Events
-              </a>
-              <a class="nav-link" href="addEvent.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-plus-circle"></i>
-                </div>
-                Add Events
-              </a>
-              <a class="nav-link" href="calendar.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-calendar-alt"></i>
-                </div>
-                Event Calendar
-              </a>
-
-              <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReviews" aria-expanded="false" aria-controls="collapseReviews">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-star"></i>
-                </div>
-                Review Management
-                <div class="sb-sidenav-collapse-arrow">
-                  <i class="fas fa-angle-down"></i>
-                </div>
-              </a>
-              <div class="collapse" id="collapseReviews" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                <nav class="sb-sidenav-menu-nested nav">
-                  <a class="nav-link" href="addReview.html">Add Review</a>
-                  <a class="nav-link" href="viewReviews.html">View Reviews</a>
-                </nav>
-              </div>
-
-              <!-- New Booking Details Link -->
-              <a class="nav-link" href="booking_details.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-ticket-alt"></i>
-                </div>
-                Booking Details
-              </a>
-              <!-- Manage Bookings Link -->
-              <a class="nav-link" href="manage_bookings.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-book"></i>
-                </div>
-                Manage Bookings
-              </a>
-              <!-- Feedback Forum Link -->
-              <a class="nav-link" href="feedbackForum.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-comment-alt"></i>
-                </div>
-                Feedback Forum
-              </a>
-              <!-- manage_feedback Link -->
-              <a class="nav-link" href="manage_feedback.html">
-                <div class="sb-nav-link-icon">
-                  <i class="fas fa-comment-alt"></i>
-                </div>
-                Manage Feedback
-              </a>
-
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="adminDashboard.html">Admin Dashboard</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  
+                  <li class="nav-item">
+                      <a class="nav-link" href="manage_feedback.html">Manage Feedback</a>
+                  </li>
+              </ul>
+              <form class="d-flex">
+                  <button class="btn btn-outline-light" id="logoutButton">Logout</button>
+              </form>
           </div>
-        </nav>
       </div>
+  </nav>
       <div id="layoutSidenav_content">
         <main>
           <div class="container-fluid px-4">
