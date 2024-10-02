@@ -44,6 +44,9 @@ $(document).ready(function () {
       contentType: "application/json",
       data: JSON.stringify(userCredentials),
       success: function (response) {
+
+        initSocket(true);
+        
         // Redirect based on the user's role
         if (response.role === "admin") {
           window.location.href = "adminDashboard.html";
@@ -65,11 +68,11 @@ $(document).ready(function () {
 $(document).ready(function () {
   $("#logoutButton").click(function () {
     $.ajax({
-      url: "/api/users/logout", // Adjust the URL if necessary
+      url: "/api/users/logout", 
       type: "POST",
       success: function (response) {
-        alert(response.message); // Show logout success message
-        window.location.href = "/"; // Redirect to login page
+        alert(response.message); 
+        window.location.href = "/"; 
       },
       error: function (xhr, status, error) {
         alert("Error logging out");
@@ -77,6 +80,7 @@ $(document).ready(function () {
     });
   });
 });
+
 
 // Add Event
 $(document).ready(function () {
@@ -716,11 +720,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to fetch reviews for the selected event
   document.addEventListener("DOMContentLoaded", function () {
     $.get("/reviewevents/all", function(events) {
-      const eventDropdown = $("#eventDropdown");
-      eventDropdown.empty(); // Clear previous options
-      eventDropdown.append('<option selected disabled>Choose an event</option>'); // Default option
+      const revieweventDropdown = $("#revieweventDropdown");
+      revieweventDropdown.empty(); // Clear previous options
+      revieweventDropdown.append('<option selected disabled>Choose an event</option>'); // Default option
       events.forEach(event => {
-        eventDropdown.append(`<option value="${event.eventId}">${event.eventName}</option>`);
+        revieweventDropdown.append(`<option value="${event.eventId}">${event.eventName}</option>`);
       });
     }).fail(function() {
       
@@ -759,7 +763,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Load reviews when the search button is clicked
     $("#searchReviewsBtn").on("click", function() {
-      const selectedEventId = $("#eventDropdown").val();
+      const selectedEventId = $("#revieweventDropdown").val();
       if (selectedEventId) {
         loadReviews(selectedEventId);
       } else {
@@ -832,4 +836,32 @@ document.addEventListener("DOMContentLoaded", function () {
       //   '<tr><td colspan="4">Error loading events.</td></tr>';
     });
 });
+
+let socket = null;
+function initSocket(connect) {
+  if (connect) {
+      if (!socket) {
+          socket = io();  // Assumes your server is at the same host
+          console.log('Socket connected', socket);
+
+          socket.on('number', function(num) {
+              console.log('Received random number: ' + num);
+              // Optionally, display the number on the page
+          });
+      }
+  } else {
+      console.log('Attempting to disconnect, current socket:', socket);
+      
+      if (socket && socket.connected) {
+          socket.emit('logout');  // Notify the server about the logout
+          socket.disconnect();    // Disconnect the socket
+          console.log('Socket disconnected');
+      }
+      socket = null;  // Clear the reference to the socket object
+  }
+}
+
+
+
+
 
