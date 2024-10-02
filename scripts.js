@@ -642,7 +642,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Fetch latest 5 events and display as cards
 document.addEventListener("DOMContentLoaded", function () {
   console.log('call event');
-  fetch("/events", {
+  fetch("/events/all", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -671,13 +671,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h5 class="card-title">${event.eventName}</h5>
                 <img src="/uploads/${
                   event.eventPhoto
-                }" class="card-img-top" alt="Event Photo" style="max-height: 200px; object-fit: cover; margin-top: 15px;">
+                }" class="card-img-top" alt="Event Photo" style="height: 350px; object-fit: cover; margin-top: 15px;">
                 <p class="card-text mt-3">
                   <strong>Date:</strong> ${new Date(
                     event.eventDate
                   ).toLocaleDateString()}<br>
                   <strong>Venue:</strong> ${event.venue}
+                 <br>
+                  <strong>Time:</strong> ${event.eventTime}
                 </p>
+
+                <p>${event.aboutEvent}</p>
+                
               </div>
             </div>
           `;
