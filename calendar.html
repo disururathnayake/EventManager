@@ -24,10 +24,72 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
       rel="stylesheet"
     />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    />
+
     <style>
       #calendar {
         max-width: 900px;
         margin: 0 auto;
+      }
+    </style>
+
+    <style>
+      /* Modal CSS */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+      }
+
+      .modal-dialog {
+        position: relative;
+        margin: 5% auto;
+        width: 80%;
+        max-width: 500px;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 0;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-height: 80vh; /* Ensure the modal doesn't exceed the viewport height */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header,
+      .modal-footer {
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto; /* Scrollable */
+        flex-grow: 1; /* Make the body take up remaining space */
+      }
+
+      .close {
+        float: right;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Ensuring modal content is scrollable */
+      .modal-body {
+        max-height: 70vh; /* Set a maximum height for the body */
+        overflow-y: auto; /* Enable vertical scroll */
       }
     </style>
   </head>
@@ -46,20 +108,7 @@
       <!-- Navbar Search-->
       <form
         class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
-      >
-        <!-- <div class="input-group">
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Search for..."
-            aria-label="Search for..."
-            aria-describedby="btnNavbarSearch"
-          />
-          <button class="btn btn-primary" id="btnNavbarSearch" type="button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div> -->
-      </form>
+      ></form>
       <!-- Navbar-->
       <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
@@ -114,7 +163,14 @@
                 Event Calendar
               </a>
 
-              <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReviews" aria-expanded="false" aria-controls="collapseReviews">
+              <a
+                class="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseReviews"
+                aria-expanded="false"
+                aria-controls="collapseReviews"
+              >
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-star"></i>
                 </div>
@@ -123,7 +179,12 @@
                   <i class="fas fa-angle-down"></i>
                 </div>
               </a>
-              <div class="collapse" id="collapseReviews" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+              <div
+                class="collapse"
+                id="collapseReviews"
+                aria-labelledby="headingOne"
+                data-bs-parent="#sidenavAccordion"
+              >
                 <nav class="sb-sidenav-menu-nested nav">
                   <a class="nav-link" href="addReview.html">Add Review</a>
                   <a class="nav-link" href="viewReviews.html">View Reviews</a>
@@ -152,8 +213,12 @@
                 Feedback Forum
               </a>
               <!-- manage_feedback Link -->
-              
-
+              <a class="nav-link" href="manage_feedback.html">
+                <div class="sb-nav-link-icon">
+                  <i class="fas fa-comment-alt"></i>
+                </div>
+                Manage Feedback
+              </a>
             </div>
           </div>
         </nav>
@@ -162,73 +227,141 @@
       <div class="container mt-5">
         <h2>Event Calendar</h2>
         <div id="calendar"></div>
-        <!-- <form id="addEventForm">
-          <div class="mb-3">
-            <label for="eventName" class="form-label">Event Name</label>
-            <input type="text" class="form-control" id="eventName" required />
-          </div>
-          <div class="mb-3">
-            <label for="eventDate" class="form-label">Event Date</label>
-            <input type="date" class="form-control" id="eventDate" required />
-          </div>
-          <div class="mb-3">
-            <label for="eventTime" class="form-label">Event Time</label>
-            <input type="time" class="form-control" id="eventTime" required />
-          </div>
-          <div class="mb-3">
-            <label for="venue" class="form-label">Venue</label>
-            <input type="text" class="form-control" id="venue" required />
-          </div>
-          <div class="mb-3">
-            <label for="aboutEvent" class="form-label">About the Event</label>
-            <textarea
-              class="form-control"
-              id="aboutEvent"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="specialNotes" class="form-label">Special Notes</label>
-            <textarea
-              class="form-control"
-              id="specialNotes"
-              rows="2"
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Type</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="freeForAll"
-              value="Free for All"
-              checked
-            />
-            <label for="freeForAll">Free for All</label><br />
-            <input
-              type="radio"
-              name="eventType"
-              id="paidTickets"
-              value="Paid - Tickets"
-            />
-            <label for="paidTickets">Paid - Tickets</label>
-          </div>
+      </div>
 
-          <div class="mb-3">
-            <label for="eventPhoto" class="form-label"
-              >Event Notice Photo (optional)</label
-            >
-            <input type="file" class="form-control" id="eventPhoto" />
-          </div>
+      <div id="myModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Event Details</h5>
+              <span class="close" aria-label="Close">&times;</span>
+            </div>
+            <div class="modal-body">
+              <!-- <form id="addEventForm">
+                <div class="mb-3">
+                  <label for="eventName" class="form-label">Event Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="eventName"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="eventDate" class="form-label">Event Date</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="eventDate"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="eventTime" class="form-label">Event Time</label>
+                  <input
+                    type="time"
+                    class="form-control"
+                    id="eventTime"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="venue" class="form-label">Venue</label>
+                  <input type="text" class="form-control" id="venue" required />
+                </div>
+                <div class="mb-3">
+                  <label for="aboutEvent" class="form-label"
+                    >About the Event</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="aboutEvent"
+                    rows="3"
+                    required
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="specialNotes" class="form-label"
+                    >Special Notes</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="specialNotes"
+                    rows="2"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Type</label><br />
+                  <input
+                    type="radio"
+                    name="eventType"
+                    id="freeForAll"
+                    value="Free for All"
+                    checked
+                  />
+                  <label for="freeForAll">Free for All</label><br />
+                  <input
+                    type="radio"
+                    name="eventType"
+                    id="paidTickets"
+                    value="Paid - Tickets"
+                  />
+                  <label for="paidTickets">Paid - Tickets</label>
+                </div>
 
-          <button type="submit" class="btn btn-primary" id="addEventButton">
-            Add Event
-          </button>
-        </form> -->
+                <div class="mb-3">
+                  <label for="eventPhoto" class="form-label"
+                    >Event Notice Photo (optional)</label
+                  >
+                  <input type="file" class="form-control" id="eventPhoto" />
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  id="addEventButton"
+                >
+                  Add Event
+                </button>
+              </form> -->
+
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title" id="eventTitleItem"></h5>
+                  <img
+                    src=""
+                    class="card-img-top"
+                    alt="Event Photo"
+                    style="
+                      max-height: 200px;
+                      object-fit: cover;
+                      margin-top: 15px;
+                    "
+                    id="eventImageItem"
+                  />
+                  <div class="card-text mt-3 d-flex">
+                    <strong>Date: </strong>&nbsp;
+                    <p id="eventDateItem"></p>
+                  </div>
+                  <div class="card-text d-flex">
+                    <strong>Time: </strong>&nbsp;
+                    <p id="eventTimeItem"></p>
+                  </div>
+                  <div class="card-text d-flex">
+                    <strong>Venue: </strong>&nbsp;
+                    <p id="eventVenueItem"></p>
+                  </div>
+                  <div class="card-text d-flex">
+                    <strong>Description: </strong>&nbsp;
+                    <p id="eventDescriptionItem"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script> -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -236,52 +369,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-    <!-- <script>
-      $(document).ready(function () {
-        // Initialize the calendar
-        $("#calendar").fullCalendar({
-          header: {
-            left: "prev,next today",
-            center: "title",
-            right: "month,agendaWeek,agendaDay",
-          },
-          events: [
-            {
-              title: "Event 1",
-              start: "2024-10-01T10:00:00", // Start time (10:00 AM)
-              end: "2024-10-01T12:00:00", // End time (12:00 PM)
-              description: "This is event 1 description", // Custom field
-            },
-            {
-              title: "Event 1.1",
-              start: "2024-10-01T15:00:00", // Start time (10:00 AM)
-              end: "2024-10-01T17:00:00", // End time (12:00 PM)
-              description: "This is event 1.1 description", // Custom field
-            },
-            {
-              title: "Event 2",
-              start: "2024-10-05",
-              end: "2024-10-07",
-              description: "This is event 2 description",
-            },
-            {
-              title: "Event 3",
-              start: "2024-10-09T12:30:00",
-              allDay: false,
-              description: "This is event 3 description",
-            },
-          ],
-          editable: true,
-          droppable: true, // allows for dragging and dropping
-          eventClick: function (event) {
-            // Show an alert with event details
-            alert(
-              "Event: " + event.title + "\nDescription: " + event.description
-            );
-          },
-        });
-      });
-    </script> -->
 
     <script src="scripts.js"></script>
   </body>
