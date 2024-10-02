@@ -21,6 +21,7 @@ $(document).ready(function () {
                   <button class="btn btn-primary btn-sm edit-feedback" data-id="${feedback.feedbackId}">Edit</button>
                   <button class="btn btn-danger btn-sm delete-feedback" data-id="${feedback.feedbackId}">Delete</button>
                 </td>
+                
               </tr>`;
             tableBody.append(row);
           });
