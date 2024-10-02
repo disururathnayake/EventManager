@@ -4,6 +4,17 @@ const client = require('../dbConnection'); // MongoDB connection
 // Access the feedbacks collection
 const feedbacksCollection = client.db('users').collection('feedbacks');
 
+exports.submitFeedback = (feedback, callback) => {
+  // Simulating a database operation
+  const dbError = false; // Change this for testing
+
+  if (dbError) {
+      callback('Error saving feedback', null); // Simulate a database error
+  } else {
+      callback(null, { success: true }); // Simulate successful insertion
+  }
+};
+
 // Function to create feedback
 function createFeedback(feedback, callback) {
   feedback.feedbackId = uuidv4(); // Generate a unique feedback ID

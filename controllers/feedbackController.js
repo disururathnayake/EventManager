@@ -1,9 +1,13 @@
-// feedbackController.js
 const feedbackModel = require('../models/feedbackModel');
 
 // Create new feedback
 const createFeedback = (req, res) => {
   const { name, email, phone, query } = req.body;
+
+  // Check for missing fields
+  if (!name || !email || !phone || !query) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
   const newFeedback = {
     name,
@@ -14,7 +18,7 @@ const createFeedback = (req, res) => {
 
   feedbackModel.createFeedback(newFeedback, (err, result) => {
     if (err) {
-      return res.status(500).json({ message: 'Error saving feedback', err });
+      return res.status(500).json({ message: 'Failed to submit feedback', err });
     }
     res.status(201).json({ message: 'Feedback submitted successfully', feedback: result });
   });
