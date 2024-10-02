@@ -558,7 +558,7 @@ const addEventCards = (events) => {
             <p>
               <span>Time: ${event.eventTime}</span>
             </p>
-            <p>${event.aboutEvent}</p>
+            
           </div>
           <div class="card-reveal">
             <div class="event-comments">
