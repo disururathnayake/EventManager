@@ -8,8 +8,8 @@ describe('Feedback Controller', () => {
   beforeEach(() => {
     req = {
       body: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
+        name: 'Chamoth DevinDA',
+        email: 'cketipearachchi@gmail.com',
         phone: '1234567890',
         query: 'This is a test feedback.'
       },
