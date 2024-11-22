@@ -22,6 +22,18 @@ function getAllEvents(userId, callback) {
     });
   }
 
+  function getAll(callback) {
+    
+   
+        collection.find({}).toArray((err, events) => {
+            if (err) {
+              return callback(err, null);
+            }
+            callback(null, events); // Return all events
+          });
+    
+  }
+
 
 
 function submitReview(reviewData, callback) {
@@ -33,4 +45,13 @@ function submitReview(reviewData, callback) {
   });
 }
 
-module.exports = { getAllEvents, submitReview};
+function getReviewsByEventId(eventId, callback) {
+    reviewsCollection.find({ eventId: eventId }).toArray((err, reviews) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, reviews); // Return the fetched reviews
+    });
+  }
+
+module.exports = { getAllEvents, submitReview, getReviewsByEventId, getAll};

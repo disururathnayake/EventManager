@@ -1,3 +1,4 @@
+const session = require('express-session');
 const loginModel = require('../models/loginModel'); // Import the login model
 
 //Register User
@@ -33,8 +34,9 @@ const signInUser = (req, res) => {
             req.session.userId = user.userId;
             req.session.role = user.role; 
             req.session.user = user;  
+            req.session.email = user.email;
 
-            console.log('Session userId set:', req.session.userId, req.session.role);
+            console.log('Session userId set:', req.session.userId, req.session.email);
             
             
             return res.status(200).json({
@@ -56,7 +58,10 @@ const logoutUser = (req, res) => {
         if (err) {
             return res.status(500).json({ message: 'Error logging out' });
         }
-        res.clearCookie('connect.sid'); // Clears the session cookie
+
+        // Ensure the options match those used when the session cookie was set.
+        res.clearCookie('connect.sid', { path: '/', httpOnly: true, secure: false });
+
         res.status(200).json({ message: 'User logged out successfully' });
     });
 };

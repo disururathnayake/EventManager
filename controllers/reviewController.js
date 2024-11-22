@@ -19,6 +19,25 @@ const getAllEvents = (req, res) => {
     });
   };
 
+  const getAll = (req, res) => {
+    // Check if the user is logged in
+    const userId = req.session.userId;
+  
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: Please log in to view events' });
+    }
+  
+    // Call the model to get events the user has not reviewed
+    reviewmanageModel.getAll((err, events) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching events' });
+      }
+      
+      // Return the events to the client
+      res.status(200).json(events);
+    });
+  };
+
 const submitComment = (req, res) => {
     const { eventId, comment, rating } = req.body;
   
@@ -44,6 +63,17 @@ const submitComment = (req, res) => {
       res.status(201).json({ success: true, message: 'Review submitted successfully' });
     });
   };
+
+  const getReviewsForEvent = (req, res) => {
+    const { eventId } = req.params;
+  
+    reviewmanageModel.getReviewsByEventId(eventId, (err, reviews) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching reviews.' });
+      }
+      res.status(200).json(reviews); // Send the reviews back to the client
+    });
+  };
   
 
-module.exports = { getAllEvents, submitComment};
+module.exports = { getAllEvents, submitComment, getReviewsForEvent, getAll};
